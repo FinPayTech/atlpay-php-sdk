@@ -11,7 +11,7 @@
 	"authors": [
 		{
 			"name": "ATLPay and contributors",
-			"homepage": "https://github.com/atlpay/php-sdk/contributors"
+			"homepage": "https://github.com/FinPayTech/atlpay-php-sdk/contributors"
 		}
 	],
 	"require": {
@@ -24,8 +24,5 @@
 	  },
 	"require-dev": {
 		"phpunit/phpunit": "~4.0"
-	},
-	"autoload": {
-		"psr-4": { "ATLPay\\" : "src/" }
 	}
 }
