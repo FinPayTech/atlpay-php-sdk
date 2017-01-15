@@ -1,5 +1,6 @@
 <?php
-require_once('../vendor/autoload.php');
+$vendorDir	=	 dirname(dirname(dirname(dirname(__FILE__))));
+require_once($vendorDir.DIRECTORY_SEPARATOR."autoload.php");
 use ATLPay\ATLPay;
 use ATLPay\Charge;
 try{
@@ -8,7 +9,7 @@ try{
 	$chargeObject	=	new Charge();
 	try{
 		$txnCode		=	strtoupper(uniqid());
-		$chargeObject->setOrderCode("YOUR CARD IT OR ORDER CODE");
+		$chargeObject->setOrderCode("YOUR CART ID OR YOUR ORDER CODE");
 		$chargeObject->setOrderDescription("DESCRIPTION FOR ORDER {REQUIRED}");
 		$chargeObject->setSuccessReturnUrl("LEAVE EMPTY OR VALID URL");
 		$chargeObject->setFailureReturnUrl("LEAVE EMPTY OR VALID URL");
@@ -23,7 +24,7 @@ try{
 		$chargeObject->initPayment();
 		if($chargeObject->isChargeCreated()){
 			echo "Order ID : ".$chargeObject->getTransactionId(); echo "<br />";
-			echo "Payment URL : ".$chargeObject->getPaymentUrl(); // Redirect the user to this url for completing payment
+			echo "Payment Redirect URL : ".$chargeObject->getPaymentUrl(); // Redirect the user to this url for completing payment
 		}else{
 			echo "Last Error : ".$chargeObject->getLastError();
 		}

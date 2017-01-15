@@ -1,5 +1,6 @@
 <?php
-require_once('../vendor/autoload.php');
+$vendorDir	=	 dirname(dirname(dirname(dirname(__FILE__))));
+require_once($vendorDir.DIRECTORY_SEPARATOR."autoload.php");
 use ATLPay\ATLPay;
 use ATLPay\Charge;
 try{
