@@ -4,33 +4,32 @@ use Respect\Validation\Validator as v;
 use \GuzzleHttp\Client;
 class Charge{
 	
-	public $email				=	null;
-	public $billingAddressLine1	=	null;
-	public $billingAddressLine2	=	null;
-	public $billingCity			=	null;
-	public $billingState		=	null;
-	public $billingPostalCode	=	null;
-	public $billingCountryCode	=	null;
-	public $currencyCode		=	null;
-	public $amount				=	null;
-	public $orderDescription	=	null;
-	public $orderCode			=	null;
-	public $successReturnUrl	=	null;
-	public $failureReturnUrl	=	null;
-	public $cancelReturnUrl		=	null;
-	public $callBackUrl			=	null;
-	public $notificationUrl		=	null;
-	public $delivereeFirstName	=	null;
-	public $delivereeLastName	=	null;
+	public $email					=	null;
+	public $billingAddressLine1		=	null;
+	public $billingAddressLine2		=	null;
+	public $billingCity				=	null;
+	public $billingState			=	null;
+	public $billingPostalCode		=	null;
+	public $billingCountryCode		=	null;
+	public $currencyCode			=	null;
+	public $amount					=	null;
+	public $orderDescription		=	null;
+	public $orderCode				=	null;
+	public $successReturnUrl		=	null;
+	public $failureReturnUrl		=	null;
+	public $cancelReturnUrl			=	null;
+	public $callBackUrl				=	null;
+	public $notificationUrl			=	null;
+	public $delivereeFirstName		=	null;
+	public $delivereeLastName		=	null;
 	public $delivereeAddressLine1	=	null;
 	public $delivereeAddressLine2	=	null;
-	public $delivereeCity	=	null;
-	public $delivereeState	=	null;
-	public $delivereePostalCode	=	null;
+	public $delivereeCity			=	null;
+	public $delivereeState			=	null;
+	public $delivereePostalCode		=	null;
 	public $delivereeCountryCode	=	null;
-	public $delivereeMobile	=	null;
-	public $delivereePhone	=	null;
-	
+	public $delivereeMobile			=	null;
+	public $delivereePhone			=	null;
 	private $isChargeCreated		=	false;
 	private $transactionId			=	null;
 	private $paymentUrl				=	null;
@@ -41,14 +40,16 @@ class Charge{
 	}
 	
 	//Setter function for setting order code
-	//params string
+	//params string $orderCode
+	//returns 
 	public function setOrderCode($orderCode){
 		if(v::stringType()->validate($orderCode)){
 			$this->orderCode	=	$orderCode;
 		}
 	}
 	//Setter function for setting order description
-	//params string
+	//params string $orderDescription
+	//returns none or throws exception on failure
 	public function setOrderDescription($orderDescription){
 		if(v::stringType()->notEmpty()->validate($orderDescription)){
 			$this->orderDescription	=	$orderDescription;
@@ -59,7 +60,8 @@ class Charge{
 	//Setter function for setting payment success return url eg. http://your-domain.com/thank-you/your-order-code
 	//The customer will be redirected to this url once payment is sucessful. 
 	//However you should not rely on this url for payment status but listen to notifications.
-	//params url
+	//params url(string) $successReturnUrl
+	//returns none or throws exception on failure
 	public function setSuccessReturnUrl($successReturnUrl){
 		if($successReturnUrl){
 			if(v::url()->validate($successReturnUrl)){
@@ -72,7 +74,8 @@ class Charge{
 	//Setter function for setting payment failure return url eg. http://your-domain.com/failed/your-order-code
 	//The customer will be redirected to this url once payment is failed. 
 	//However you should not rely on this url for payment status but listen to notifications.
-	//params url
+	//params url(string) $failureReturnUrl
+	//returns none or throws exception on failure
 	public function setFailureReturnUrl($failureReturnUrl){
 		if($failureReturnUrl){
 			if(v::url()->validate($failureReturnUrl)){
@@ -85,7 +88,8 @@ class Charge{
 	//Setter function for setting payment cancel return url eg. http://your-domain.com/cancelled/your-order-code
 	//The customer will be redirected to this url once payment is cancelled by the customer. 
 	//However you should not rely on this url for payment status but listen to notifications.
-	//params url
+	//params url(string) $cancelReturnUrl
+	//returns none or throws exception on failure
 	public function setCancelReturnUrl($cancelReturnUrl){
 		if($cancelReturnUrl){
 			if(v::url()->validate($cancelReturnUrl)){
@@ -95,10 +99,18 @@ class Charge{
 			}
 		}
 	}
-	//Setter function for setting payment cancel return url eg. http://your-domain.com/cancelled/your-order-code
-	//The customer will be redirected to this url once payment is cancelled by the customer. 
-	//However you should not rely on this url for payment status but listen to notifications.
-	//params url
+	//Setter function for setting callback url eg. http://your-domain.com/callback-handler/your-order-code
+	//ATL Pay will send PUSH Notification to this URL for Final Confirmation for Processing Transaction
+	//This URL should Return one of followings
+	//1. HTTP STATUS 200 with URL in BODY 
+	//			IF URL is returned then payment will be cancelled and customer will be redirected to this url, 
+	// 			where you can explain to this customer about reason for calling back
+	//2. HTTP STATUS 200 without URL or BODY
+	//			Payment will continue, this is approval to ATLPay to process the payment
+	//3. NON 200 HTTP STATUS
+	//			Payment will be rejected and customer will be redirected to failure return url if provided
+	//params url(string) $callBackUrl
+	//returns none or throws exception on failure
 	public function setCallbackUrl($callBackUrl){
 		if($callBackUrl){
 			if(v::url()->validate($callBackUrl)){
@@ -108,7 +120,10 @@ class Charge{
 			}
 		}
 	}
-	
+	//Setter function for setting payment notification url eg. http://your-domain.com/payment-notification/your-order-code
+	//You should listen to this URL for payment related updates.
+	//params url(string) $callBackUrl
+	//returns none or throws exception on failure
 	public function setNotificationUrl($notificationUrl){
 		if($notificationUrl){
 			if(v::url()->validate($notificationUrl)){
@@ -118,7 +133,9 @@ class Charge{
 			}
 		}
 	}
-	
+	//Setter function to set customer email address
+	//params email(string) $email
+	//returns none or throws exception on failure
 	public function setEmail($email){
 		if($email){
 			if(v::email()->validate($email)){
@@ -128,7 +145,9 @@ class Charge{
 			}
 		}
 	}
-	
+	//Setter function to set charge currency
+	//params char[3] $currencyCode
+	//returns none or throws exception on failure
 	public function setCurrency($currencyCode){
 		if(v::currencyCode()->validate($currencyCode)){
 			$this->currencyCode	=	$currencyCode;
@@ -136,7 +155,9 @@ class Charge{
 			throw new \Exception("INVALID CURRENCY CODE");
 		}
 	}
-	
+	//Setter function to set charge amount
+	//params int $amount
+	//returns none or throws exception on failure
 	public function setAmount($amount){
 		if(v::intVal()->notEmpty()->min(0)->validate($amount)){
 			$this->amount	=	$amount;
@@ -144,7 +165,15 @@ class Charge{
 			throw new \Exception("INVALID AMOUNT");
 		}
 	}
-	
+	//Setter function to set billing address of customer
+	//params 
+	//		string $line1
+	//		string $line2
+	//		string $city
+	//		string $state
+	//		string $postalCode
+	//		char[2] $countryCode
+	//returns none
 	public function setBillingAddress($line1, $line2, $city, $state, $postalCode, $countryCode){
 		$this->billingAddressLine1	=	$line1;
 		$this->billingAddressLine2	=	$line2;
@@ -153,7 +182,19 @@ class Charge{
 		$this->billingPostalCode	=	$postalCode;
 		$this->billingCountryCode	=	$countryCode;
 	}
-	
+	//Setter function to set delivery details
+	//params 
+	//		string $first_name
+	//		string $last_name
+	//		string $line1
+	//		string $line2
+	//		string $city
+	//		string $state
+	//		string $postalCode
+	//		char[2] $countryCode
+	//		string $mobile
+	//		string $phone
+	//returns none
 	public function setDeliveryDetails($first_name, $last_name, $line1, $line2, $city, $state, $postalCode, $countryCode, $mobile, $phone){
 		$this->delivereeFirstName		=	$first_name;
 		$this->delivereeLastName		=	$last_name;
@@ -167,23 +208,28 @@ class Charge{
 		$this->delivereePhone			=	$phone;
 		
 	}
-	
+	//Checks if Charge is created on ATLPay
+	//Returns Boolean
 	public function isChargeCreated(){
 		return $this->isChargeCreated;
 	}
-	
+	//Returns Payment URL, Customer needs to be redirected to returned url to complete payment.
+	//Returns String URL
 	public function getPaymentUrl(){
 		return $this->paymentUrl;
 	}
-	
+	//Returns Transaction ID
+	//Returns String Transaction ID
 	public function getTransactionId(){
 		return $this->transactionId;
 	}
-	
+	//Returns Last Error in Error List
+	//Returns String Last Error Message
 	public function getLastError(){
 		return $this->lastError;
 	}
-	
+	//Initilitalizes the Payment
+	//Params string $paymentType (CARD OR SOFORT)
 	public function initPayment($paymentType = "CARD"){
 		$body							=	[];
 		$body["type"]					=	$paymentType;
@@ -250,7 +296,8 @@ class Charge{
 		}
 		
 	}
-	
+	//Does partial or full refund
+	//Params string $orderId, int $amount
 	//Return True or Error Message
 	public function refund($orderId, $amount = null){
 		

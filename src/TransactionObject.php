@@ -20,6 +20,9 @@ class TransactionObject{
 	private $currencyCode	=	null;
 	private $orderCode		=	null;
 	private $txnId			=	null;
+	
+	
+	
 	public function __construct($txnId){
 		if(!$txnId){
 			throw new \Exception("Empty Transaction ID");
